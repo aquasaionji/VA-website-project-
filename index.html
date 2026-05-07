@@ -1,0 +1,1542 @@
+<!DOCTYPE html>
+<html lang="zh-HK">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>曾鈺成：般咸道的生命方程</title>
+    <style>
+        :root {
+            --spc-dark: #0a0a0f;
+            --spc-blue: #1a1a2e;
+            --spc-gold: #d4a574;
+            --spc-gold-light: #e8c9a0;
+            --text-primary: #f5f5f5;
+            --text-secondary: #b0b0b0;
+            --text-muted: #808080;
+        }
+        
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            -webkit-tap-highlight-color: transparent;
+        }
+        
+        html {
+            scroll-behavior: smooth;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Helvetica Neue", Arial, "PingFang HK", "PingFang TC", "Microsoft JhengHei", sans-serif;
+            background: linear-gradient(135deg, var(--spc-dark) 0%, var(--spc-blue) 50%, #16213e 100%);
+            color: var(--text-primary);
+            min-height: 100vh;
+            overflow-x: hidden;
+            line-height: 1.6;
+        }
+        
+        .serif { 
+            font-family: Georgia, "Times New Roman", "Noto Serif TC", serif; 
+        }
+
+        /* ========== SOUND TOGGLE ========== */
+        .sound-toggle {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 400;
+            background: rgba(255,255,255,0.1);
+            border: 1px solid rgba(212, 165, 116, 0.3);
+            border-radius: 50%;
+            width: 44px;
+            height: 44px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-size: 20px;
+            color: var(--spc-gold);
+        }
+        
+        .sound-toggle:hover {
+            background: rgba(212, 165, 116, 0.2);
+            transform: scale(1.1);
+        }
+        
+        .sound-toggle.muted {
+            opacity: 0.5;
+        }
+
+        /* ========== START SCREEN ========== */
+        #start-screen {
+            position: fixed;
+            inset: 0;
+            z-index: 300;
+            background: linear-gradient(135deg, var(--spc-dark) 0%, #0f0f23 50%, var(--spc-blue) 100%);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            text-align: center;
+            transition: opacity 0.8s ease;
+        }
+        
+        .start-visual {
+            position: relative;
+            margin-bottom: 30px;
+        }
+        
+        .logo-circle {
+            width: clamp(100px, 25vw, 140px);
+            height: clamp(100px, 25vw, 140px);
+            border: 2px solid var(--spc-gold);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            background: rgba(212, 165, 116, 0.05);
+            animation: fadeInUp 0.8s ease forwards;
+        }
+        
+        .logo-circle::before {
+            content: '';
+            position: absolute;
+            inset: -10px;
+            border: 1px solid rgba(212, 165, 116, 0.3);
+            border-radius: 50%;
+            animation: pulse 3s infinite;
+        }
+        
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); opacity: 0.5; }
+            50% { transform: scale(1.05); opacity: 0.8; }
+        }
+        
+        .logo-text {
+            font-size: clamp(28px, 7vw, 42px);
+            font-weight: bold;
+            letter-spacing: 0.3em;
+            color: var(--spc-gold);
+        }
+        
+        .start-title {
+            font-size: clamp(32px, 9vw, 64px);
+            font-weight: 900;
+            letter-spacing: 0.12em;
+            margin-bottom: 12px;
+            animation: fadeInUp 0.8s ease 0.15s forwards;
+            opacity: 0;
+            background: linear-gradient(135deg, var(--text-primary) 0%, var(--spc-gold-light) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        
+        .start-subtitle {
+            font-size: clamp(14px, 3.5vw, 20px);
+            color: var(--text-secondary);
+            margin-bottom: 40px;
+            max-width: 90%;
+            line-height: 1.6;
+            animation: fadeInUp 0.8s ease 0.25s forwards;
+            opacity: 0;
+        }
+        
+        .btn-primary {
+            background: transparent;
+            color: var(--spc-gold);
+            border: 1.5px solid var(--spc-gold);
+            padding: 12px 28px;
+            font-size: clamp(13px, 3.2vw, 16px);
+            font-weight: 600;
+            border-radius: 30px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            min-width: 160px;
+            letter-spacing: 0.1em;
+            animation: fadeInUp 0.8s ease 0.35s forwards;
+            opacity: 0;
+        }
+        
+        .btn-primary:hover, .btn-primary:active {
+            background: var(--spc-gold);
+            color: var(--spc-dark);
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(212, 165, 116, 0.3);
+        }
+
+        /* ========== COUPLETS ========== */
+        .couplet {
+            position: fixed;
+            top: 50%;
+            transform: translateY(-50%);
+            writing-mode: vertical-rl;
+            text-orientation: upright;
+            font-size: clamp(12px, 3vw, 16px);
+            letter-spacing: 0.5em;
+            color: rgba(212, 165, 116, 0.4);
+            z-index: 10;
+            font-weight: 600;
+            pointer-events: none;
+            display: none;
+        }
+        
+        .couplet-left {
+            left: 8px;
+        }
+        
+        .couplet-right {
+            right: 8px;
+        }
+        
+        @media (min-width: 768px) {
+            .couplet {
+                font-size: 18px;
+                letter-spacing: 0.8em;
+            }
+            .couplet-left {
+                left: 20px;
+            }
+            .couplet-right {
+                right: 20px;
+            }
+        }
+
+        /* ========== HUB SCREEN ========== */
+        #hub-screen {
+            display: none;
+            min-height: 100vh;
+            padding: 24px 16px 60px;
+            position: relative;
+        }
+        
+        .hub-header {
+            text-align: center;
+            margin-bottom: 28px;
+            padding-top: 20px;
+        }
+        
+        .hub-title {
+            font-size: clamp(20px, 5vw, 32px);
+            font-weight: 800;
+            color: var(--spc-gold);
+            letter-spacing: 0.15em;
+            margin-bottom: 10px;
+        }
+        
+        .hub-subtitle {
+            font-size: clamp(11px, 2.8vw, 14px);
+            color: var(--text-muted);
+            letter-spacing: 0.05em;
+        }
+        
+        .hub-progress {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            font-size: clamp(11px, 2.8vw, 13px);
+            color: var(--text-secondary);
+            background: rgba(255,255,255,0.03);
+            padding: 8px 16px;
+            border-radius: 20px;
+            border: 1px solid rgba(212, 165, 116, 0.2);
+            margin-top: 12px;
+        }
+        
+        .progress-dots {
+            display: flex;
+            gap: 4px;
+        }
+        
+        .progress-dot {
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+            background: rgba(212, 165, 116, 0.3);
+            transition: all 0.3s;
+        }
+        
+        .progress-dot.completed {
+            background: var(--spc-gold);
+        }
+        
+        /* Timeline Layout */
+        .timeline-container {
+            max-width: 600px;
+            margin: 0 auto;
+            position: relative;
+            padding: 20px 0;
+        }
+        
+        .timeline-line {
+            position: absolute;
+            left: 24px;
+            top: 0;
+            bottom: 0;
+            width: 2px;
+            background: linear-gradient(180deg, var(--spc-gold) 0%, rgba(212, 165, 116, 0.2) 100%);
+        }
+        
+        @media (min-width: 768px) {
+            .timeline-line {
+                left: 50%;
+                transform: translateX(-50%);
+            }
+        }
+        
+        .timeline-item {
+            position: relative;
+            padding-left: 60px;
+            margin-bottom: 20px;
+            opacity: 0;
+            animation: slideInLeft 0.6s ease forwards;
+        }
+        
+        .timeline-item:nth-child(2) { animation-delay: 0.1s; }
+        .timeline-item:nth-child(3) { animation-delay: 0.2s; }
+        .timeline-item:nth-child(4) { animation-delay: 0.3s; }
+        .timeline-item:nth-child(5) { animation-delay: 0.4s; }
+        
+        @keyframes slideInLeft {
+            from {
+                opacity: 0;
+                transform: translateX(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+        
+        @media (min-width: 768px) {
+            .timeline-item {
+                padding-left: 0;
+                width: 50%;
+            }
+            .timeline-item:nth-child(odd) {
+                padding-right: 40px;
+                text-align: right;
+            }
+            .timeline-item:nth-child(even) {
+                margin-left: 50%;
+                padding-left: 40px;
+            }
+            .timeline-item:nth-child(even) .timeline-dot {
+                left: -6px;
+                right: auto;
+            }
+        }
+        
+        .timeline-dot {
+            position: absolute;
+            left: 18px;
+            top: 20px;
+            width: 14px;
+            height: 14px;
+            border-radius: 50%;
+            background: var(--spc-dark);
+            border: 2px solid var(--spc-gold);
+            z-index: 2;
+            transition: all 0.3s;
+        }
+        
+        .timeline-item:hover .timeline-dot,
+        .timeline-item:active .timeline-dot {
+            background: var(--spc-gold);
+            transform: scale(1.2);
+            box-shadow: 0 0 15px rgba(212, 165, 116, 0.5);
+        }
+        
+        @media (min-width: 768px) {
+            .timeline-dot {
+                left: auto;
+                right: -7px;
+            }
+        }
+        
+        .memory-card {
+            background: rgba(255,255,255,0.03);
+            border: 1px solid rgba(212, 165, 116, 0.15);
+            border-radius: 16px;
+            padding: 16px 20px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .memory-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: linear-gradient(90deg, var(--spc-gold), transparent);
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+        
+        .memory-card:hover::before,
+        .memory-card:active::before {
+            opacity: 1;
+        }
+        
+        .memory-card:hover,
+        .memory-card:active {
+            background: rgba(212, 165, 116, 0.08);
+            border-color: rgba(212, 165, 116, 0.4);
+            transform: translateY(-3px);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+        }
+        
+        .memory-card.completed {
+            opacity: 0.5;
+            pointer-events: none;
+        }
+        
+        .memory-card.completed::after {
+            content: '✓';
+            position: absolute;
+            top: 12px;
+            right: 12px;
+            width: 22px;
+            height: 22px;
+            background: var(--spc-gold);
+            color: var(--spc-dark);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
+            font-weight: bold;
+        }
+        
+        .card-year {
+            font-size: clamp(10px, 2.5vw, 12px);
+            color: var(--spc-gold);
+            letter-spacing: 0.1em;
+            margin-bottom: 4px;
+        }
+        
+        .card-title {
+            font-size: clamp(15px, 3.8vw, 18px);
+            font-weight: 700;
+            margin-bottom: 6px;
+            line-height: 1.3;
+        }
+        
+        .card-desc {
+            font-size: clamp(11px, 2.8vw, 13px);
+            color: var(--text-muted);
+            line-height: 1.4;
+        }
+        
+        /* Ending Trigger */
+        #ending-trigger {
+            display: none;
+            text-align: center;
+            padding: 40px 20px;
+            animation: fadeInUp 0.6s ease;
+        }
+        
+        .ending-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            color: var(--spc-gold);
+            font-size: clamp(11px, 2.8vw, 13px);
+            font-weight: 600;
+            letter-spacing: 0.1em;
+            margin-bottom: 20px;
+            padding: 10px 20px;
+            background: rgba(212, 165, 116, 0.1);
+            border-radius: 30px;
+            border: 1px solid rgba(212, 165, 116, 0.3);
+        }
+        
+        .ending-badge::before {
+            content: '✨';
+        }
+        
+        .btn-ending {
+            background: var(--spc-gold);
+            color: var(--spc-dark);
+            border: none;
+            padding: 14px 28px;
+            font-size: clamp(12px, 3vw, 15px);
+            font-weight: 700;
+            border-radius: 30px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            letter-spacing: 0.05em;
+            box-shadow: 0 4px 20px rgba(212, 165, 116, 0.3);
+        }
+        
+        .btn-ending:hover, .btn-ending:active {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 30px rgba(212, 165, 116, 0.5);
+        }
+
+        /* ========== STORY MODAL ========== */
+        #story-modal {
+            display: none;
+            position: fixed;
+            inset: 0;
+            z-index: 200;
+            background: rgba(10, 10, 15, 0.98);
+            flex-direction: column;
+            opacity: 0;
+            transition: opacity 0.4s ease;
+        }
+        
+        #story-modal.show {
+            opacity: 1;
+        }
+        
+        .modal-content {
+            background: #fafafa;
+            color: #1a1a2e;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            transform: translateY(30px);
+            transition: transform 0.4s ease;
+        }
+        
+        #story-modal.show .modal-content {
+            transform: translateY(0);
+        }
+        
+        @media (min-width: 768px) {
+            .modal-content {
+                max-width: 700px;
+                height: 85vh;
+                margin: auto;
+                border-radius: 20px;
+                overflow: hidden;
+                box-shadow: 0 25px 80px rgba(0,0,0,0.5);
+            }
+        }
+        
+        /* Modal Header */
+        .modal-header {
+            background: linear-gradient(135deg, #f5f5f5 0%, #ffffff 100%);
+            padding: 16px 20px;
+            border-bottom: 1px solid #e0e0e0;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        
+        .modal-chapter {
+            font-size: clamp(12px, 3vw, 14px);
+            color: #666;
+            letter-spacing: 0.05em;
+        }
+        
+        .btn-close-header {
+            background: none;
+            border: none;
+            font-size: 24px;
+            color: #999;
+            cursor: pointer;
+            padding: 4px;
+            line-height: 1;
+            transition: color 0.2s;
+        }
+        
+        .btn-close-header:hover {
+            color: #333;
+        }
+        
+        /* Tabs */
+        .tabs-header {
+            background: #f0f0f0;
+            padding: 12px 16px;
+            display: flex;
+            gap: 8px;
+            overflow-x: auto;
+            -webkit-overflow-scrolling: touch;
+            scrollbar-width: none;
+        }
+        
+        .tabs-header::-webkit-scrollbar {
+            display: none;
+        }
+        
+        .sub-tab {
+            flex-shrink: 0;
+            padding: 8px 16px;
+            font-size: clamp(12px, 3vw, 14px);
+            font-weight: 500;
+            border-radius: 20px;
+            border: none;
+            background: transparent;
+            color: #666;
+            cursor: pointer;
+            transition: all 0.2s;
+            white-space: nowrap;
+        }
+        
+        .sub-tab.active {
+            background: var(--spc-dark);
+            color: white;
+        }
+        
+        /* Article Area */
+        .article-area {
+            flex: 1;
+            overflow-y: auto;
+            padding: 24px 20px 80px;
+            -webkit-overflow-scrolling: touch;
+        }
+        
+        @media (min-width: 768px) {
+            .article-area {
+                padding: 32px 40px 100px;
+            }
+        }
+        
+        .article-title {
+            font-size: clamp(22px, 5vw, 30px);
+            font-weight: 800;
+            line-height: 1.3;
+            margin-bottom: 20px;
+            color: #1a1a2e;
+        }
+        
+        .article-intro {
+            font-size: clamp(13px, 3.2vw, 15px);
+            line-height: 1.7;
+            color: #555;
+            margin-bottom: 24px;
+            padding: 16px 20px;
+            background: #f5f5f5;
+            border-radius: 12px;
+            border-left: 3px solid var(--spc-gold);
+        }
+        
+        .article-body {
+            font-size: clamp(14px, 3.5vw, 16px);
+            line-height: 1.8;
+            color: #444;
+        }
+        
+        .article-body p {
+            margin-bottom: 16px;
+        }
+        
+        .article-body p:last-child {
+            margin-bottom: 0;
+        }
+        
+        .highlight-box {
+            background: linear-gradient(135deg, #f9f5f0 0%, #fdfbf7 100%);
+            border: 1px solid #e8ddd0;
+            border-radius: 12px;
+            padding: 16px 20px;
+            margin: 24px 0;
+            position: relative;
+        }
+        
+        .highlight-box::before {
+            content: '"';
+            position: absolute;
+            top: 8px;
+            left: 12px;
+            font-size: 48px;
+            color: var(--spc-gold);
+            opacity: 0.3;
+            font-family: Georgia, serif;
+            line-height: 1;
+        }
+        
+        .highlight-text {
+            font-style: italic;
+            color: #555;
+            padding-left: 20px;
+        }
+        
+        .inline-photo-box {
+            margin: 24px 0;
+            border-radius: 12px;
+            overflow: hidden;
+            background: #f5f5f5;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.08);
+        }
+        
+        .inline-photo {
+            width: 100%;
+            height: auto;
+            display: block;
+        }
+        
+        .photo-caption {
+            padding: 12px 16px;
+            font-size: clamp(11px, 2.8vw, 13px);
+            color: #777;
+            font-style: italic;
+            text-align: center;
+            background: #fafafa;
+            border-top: 1px solid #eee;
+        }
+        
+        /* Modal Footer */
+        .modal-footer {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            padding: 16px 20px;
+            background: linear-gradient(180deg, transparent 0%, #fafafa 30%);
+            display: flex;
+            justify-content: center;
+        }
+        
+        .btn-finish {
+            background: var(--spc-dark);
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            font-size: clamp(12px, 3vw, 14px);
+            font-weight: 600;
+            border-radius: 25px;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .btn-finish:hover, .btn-finish:active {
+            background: var(--spc-gold);
+            color: var(--spc-dark);
+        }
+
+        /* ========== EPILOGUE SCREEN ========== */
+        #epilogue-screen {
+            display: none;
+            background: linear-gradient(180deg, #fafafa 0%, #f5f5f5 100%);
+            color: #1a1a2e;
+            min-height: 100vh;
+            overflow-y: auto;
+        }
+        
+        .epilogue-content {
+            max-width: 700px;
+            margin: 0 auto;
+            padding: 40px 20px 60px;
+        }
+        
+        @media (min-width: 768px) {
+            .epilogue-content {
+                padding: 60px 40px 80px;
+            }
+        }
+        
+        .epilogue-header {
+            text-align: center;
+            margin-bottom: 32px;
+        }
+        
+        .epilogue-icon {
+            font-size: 40px;
+            margin-bottom: 12px;
+        }
+        
+        .epilogue-title {
+            font-size: clamp(26px, 6.5vw, 42px);
+            font-weight: 900;
+            line-height: 1.2;
+            background: linear-gradient(135deg, #1a1a2e 0%, #4a4a6a 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        
+        .epilogue-image {
+            margin-bottom: 28px;
+            border-radius: 16px;
+            overflow: hidden;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.12);
+        }
+        
+        .epilogue-image img {
+            width: 100%;
+            height: auto;
+            display: block;
+        }
+        
+        .epilogue-section {
+            margin-bottom: 28px;
+        }
+        
+        .section-title {
+            font-size: clamp(16px, 4vw, 20px);
+            font-weight: 700;
+            color: #1a1a2e;
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .section-title::before {
+            content: '';
+            width: 4px;
+            height: 20px;
+            background: var(--spc-gold);
+            border-radius: 2px;
+        }
+        
+        .epilogue-text {
+            font-size: clamp(14px, 3.5vw, 16px);
+            line-height: 1.8;
+            color: #444;
+        }
+        
+        .epilogue-text p {
+            margin-bottom: 16px;
+        }
+        
+        .quote-box {
+            background: linear-gradient(135deg, #f9f5f0 0%, #fdfbf7 100%);
+            border-left: 4px solid var(--spc-gold);
+            padding: 20px 24px;
+            margin: 28px 0;
+            border-radius: 0 12px 12px 0;
+            font-style: italic;
+            font-size: clamp(14px, 3.5vw, 16px);
+            line-height: 1.7;
+            color: #555;
+            position: relative;
+        }
+        
+        .quote-box::before {
+            content: '"';
+            position: absolute;
+            top: 8px;
+            left: 12px;
+            font-size: 60px;
+            color: var(--spc-gold);
+            opacity: 0.2;
+            font-family: Georgia, serif;
+            line-height: 1;
+        }
+        
+        .group-photo-section {
+            margin: 32px 0;
+            text-align: center;
+        }
+        
+        .group-photo-label {
+            font-size: clamp(12px, 3vw, 14px);
+            color: var(--spc-gold);
+            letter-spacing: 0.1em;
+            margin-bottom: 12px;
+            font-weight: 600;
+        }
+        
+        .epilogue-footer {
+            text-align: center;
+            padding: 40px 0 20px;
+            border-top: 1px solid #e0e0e0;
+            margin-top: 20px;
+        }
+        
+        .footer-text {
+            font-size: clamp(12px, 3vw, 14px);
+            color: #888;
+            margin-bottom: 20px;
+            font-style: italic;
+        }
+        
+        .btn-restart {
+            background: var(--spc-dark);
+            color: white;
+            border: none;
+            padding: 12px 28px;
+            font-size: clamp(12px, 3vw, 14px);
+            font-weight: 600;
+            border-radius: 25px;
+            cursor: pointer;
+            transition: all 0.3s;
+            letter-spacing: 0.05em;
+        }
+        
+        .btn-restart:hover, .btn-restart:active {
+            background: var(--spc-gold);
+            color: var(--spc-dark);
+            transform: translateY(-2px);
+        }
+
+        /* Epilogue Action Section */
+        .epilogue-action-section {
+            text-align: center;
+            padding: 40px 20px 60px;
+            margin-top: 20px;
+            background: linear-gradient(180deg, transparent 0%, rgba(212, 165, 116, 0.05) 100%);
+            border-radius: 20px;
+        }
+
+        .action-divider {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 20px;
+            color: var(--spc-gold);
+            font-size: 20px;
+        }
+
+        .action-divider::before,
+        .action-divider::after {
+            content: '';
+            flex: 1;
+            height: 1px;
+            background: linear-gradient(90deg, transparent, var(--spc-gold), transparent);
+            max-width: 100px;
+        }
+
+        .action-divider span {
+            padding: 0 15px;
+        }
+
+        .action-text {
+            font-size: clamp(13px, 3.2vw, 15px);
+            color: #666;
+            margin-bottom: 24px;
+            line-height: 1.6;
+        }
+
+        .btn-action {
+            background: linear-gradient(135deg, var(--spc-dark) 0%, #2a2a4a 100%);
+            color: var(--spc-gold);
+            border: 2px solid var(--spc-gold);
+            padding: 16px 40px;
+            font-size: clamp(14px, 3.5vw, 16px);
+            font-weight: 700;
+            border-radius: 30px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            letter-spacing: 0.1em;
+            box-shadow: 0 4px 20px rgba(212, 165, 116, 0.2);
+        }
+
+        .btn-action:hover, .btn-action:active {
+            background: var(--spc-gold);
+            color: var(--spc-dark);
+            transform: translateY(-3px);
+            box-shadow: 0 8px 30px rgba(212, 165, 116, 0.4);
+        }
+
+        /* Animations */
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- SOUND TOGGLE BUTTON -->
+    <button type="button" class="sound-toggle" id="soundToggle" onclick="toggleSound()" title="開啟/關閉音效">
+        🔊
+    </button>
+
+    <!-- START SCREEN -->
+    <div id="start-screen">
+        <div class="start-visual">
+            <div class="logo-circle">
+                <span class="logo-text serif">SPC</span>
+            </div>
+        </div>
+        <h1 class="start-title serif">時光方程</h1>
+        <p class="start-subtitle serif">
+            曾鈺成：般咸道上的 1234 與 Brotherhood<br>
+            <span style="font-size: 0.85em; opacity: 0.7;">點擊探索五個人生座標，解鎖聖保羅精神的終極答案</span>
+        </p>
+        <button type="button" class="btn-primary" onclick="startJourney()">
+            進入記憶卷軸
+        </button>
+    </div>
+
+    <!-- COUPLETS -->
+    <div class="couplet couplet-left" id="couplet-left">恭敬天主</div>
+    <div class="couplet couplet-right" id="couplet-right">愛人如己</div>
+
+    <!-- HUB SCREEN -->
+    <div id="hub-screen">
+        <header class="hub-header">
+            <h2 class="hub-title serif">人生座標</h2>
+            <p class="hub-subtitle">曾鈺成師兄的聖保羅記憶</p>
+            <div class="hub-progress">
+                <span>探索進度</span>
+                <div class="progress-dots" id="progress-dots">
+                    <div class="progress-dot"></div>
+                    <div class="progress-dot"></div>
+                    <div class="progress-dot"></div>
+                    <div class="progress-dot"></div>
+                    <div class="progress-dot"></div>
+                </div>
+                <span id="progress-text">0/5</span>
+            </div>
+        </header>
+
+        <div class="timeline-container">
+            <div class="timeline-line"></div>
+            
+            <div class="timeline-item" onclick="openPanel(1)">
+                <div class="timeline-dot"></div>
+                <div class="memory-card" id="node-1">
+                    <div class="card-year">1958 · 初見</div>
+                    <h3 class="card-title serif">初見與足跡</h3>
+                    <p class="card-desc">舊木地板的味道、嬌小的身影，與不會傷人的西瓜波</p>
+                </div>
+            </div>
+            
+            <div class="timeline-item" onclick="openPanel(2)">
+                <div class="timeline-dot"></div>
+                <div class="memory-card" id="node-2">
+                    <div class="card-year">成長 · 挫折</div>
+                    <h3 class="card-title serif">挫折與成長</h3>
+                    <p class="card-desc">會考的失落、恩師的包容，與DIY火箭的爆炸</p>
+                </div>
+            </div>
+            
+            <div class="timeline-item" onclick="openPanel(3)">
+                <div class="timeline-dot"></div>
+                <div class="memory-card" id="node-3">
+                    <div class="card-year">深夜 · 意志</div>
+                    <h3 class="card-title serif">意志的深夜</h3>
+                    <p class="card-desc">11點出發的童軍行軍，跨階級的Brotherhood</p>
+                </div>
+            </div>
+            
+            <div class="timeline-item" onclick="openPanel(4)">
+                <div class="timeline-dot"></div>
+                <div class="memory-card" id="node-4">
+                    <div class="card-year">1968 · 轉向</div>
+                    <h3 class="card-title serif">夢想的轉向</h3>
+                    <p class="card-desc">天文夢的終點，時代風雲改變的科學家志向</p>
+                </div>
+            </div>
+            
+            <div class="timeline-item" onclick="openPanel(5)">
+                <div class="timeline-dot"></div>
+                <div class="memory-card" id="node-5">
+                    <div class="card-year">1234 · 快樂</div>
+                    <h3 class="card-title serif">純粹的快樂</h3>
+                    <p class="card-desc">准考證上的幸運數字，數學家的純粹追求</p>
+                </div>
+            </div>
+        </div>
+
+        <div id="ending-trigger">
+            <div class="ending-badge">五個記憶碎片已集齊</div>
+            <button type="button" class="btn-ending" onclick="showFinalEpilogue()">
+                解鎖：生命的終極答案 →
+            </button>
+        </div>
+    </div>
+
+    <!-- STORY MODAL -->
+    <div id="story-modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <span class="modal-chapter" id="modal-chapter">第 1 章</span>
+                <button type="button" class="btn-close-header" onclick="finishReading()">×</button>
+            </div>
+            <div id="sub-tabs" class="tabs-header"></div>
+            <div id="article-scroll" class="article-area">
+                <h2 id="article-title" class="article-title serif"></h2>
+                <div id="article-intro" class="article-intro"></div>
+                <div id="article-content" class="article-body"></div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn-finish" onclick="finishReading()">
+                    <span>✓</span> 閱讀完畢
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- EPILOGUE SCREEN -->
+    <div id="epilogue-screen">
+        <div class="epilogue-content">
+            <div class="epilogue-header">
+                <div class="epilogue-icon">🎓</div>
+                <h1 class="epilogue-title serif">大公無私，愛人如己</h1>
+            </div>
+            
+            <div class="epilogue-section">
+                <h3 class="section-title">生命的方程</h3>
+                <div class="epilogue-text">
+                    <p>「如果人生是一道複雜的偏微分方程，聖保羅就是那個最初的邊界條件。」曾師兄在訪談中如是說。</p>
+                    <p>回望這半個多世紀的歲月，從 1958 年那個聞著舊木地板與粉筆灰、在課室裡安靜觀察的中二學生，到後來在立法會上面對錯綜複雜的政治博弈，人生的方程似乎充滿了無數個不可預測的變數。然而，聖保羅教給他的，卻是那些永恆不變的常數。</p>
+                </div>
+            </div>
+
+            <div class="epilogue-image">
+                <img src="1-PUT-YOUR-FILES-HERE/1-PHOTOS/photo-1.HEIC" alt="曾鈺成師兄訪談" onerror="this.style.display='none'">
+                <div class="photo-caption">曾鈺成師兄分享他的聖保羅記憶</div>
+            </div>
+
+            <div class="quote-box">
+                「『All for each and each for all』。這不只是一句校訓或基督教的理念，它是我們社會的基石。如果你希望這個社會變好，你必須先成為那個願意跨越階級、大公無私的人。」
+            </div>
+
+            <div class="epilogue-section">
+                <h3 class="section-title">Brotherhood的真諦</h3>
+                <div class="epilogue-text">
+                    <p>他強調，所謂 <strong>Brotherhood</strong>，不只是在校園裡踢踢不會傷人的西瓜波，或者在深夜行軍的街市裡分享一塊宵夜。真正的「保羅精神」，是在離開般咸道後，在面對社會的不公、階級的差異與時代的紛亂時，依然能記住那份跨越階級的平等尊重，以及對理性的堅定執著。</p>
+                    <p>從二樓露台俯瞰西瓜波的幾何軌跡，到立法會主席台上維持秩序；從1234的幸運准考證，到為社會尋找最大公約數——這就是曾鈺成師兄用一生詮釋的聖保羅精神。</p>
+                </div>
+            </div>
+
+            <div class="epilogue-image">
+                <img src="1-PUT-YOUR-FILES-HERE/1-PHOTOS/photo-2.HEIC" alt="訪談瞬間" onerror="this.style.display='none'">
+                <div class="photo-caption">在歲月的沉澱中，總結出聖保羅的精神</div>
+            </div>
+
+            <div class="epilogue-section">
+                <h3 class="section-title">給保羅仔的話</h3>
+                <div class="epilogue-text">
+                    <p>這就是我們這一代，以及你們每一代保羅仔的人生意義。無論你將來選擇哪條路——科學、政治、教育，還是其他——請記住般咸道教給你的：保持對知識的純粹追求，對人的平等尊重，以及在不同中尋找共識的智慧。</p>
+                </div>
+            </div>
+
+            <!-- GROUP PHOTO SECTION -->
+            <div class="group-photo-section">
+                <div class="group-photo-label">★ 珍貴的相遇 ★</div>
+                <div class="epilogue-image">
+                    <img src="1-PUT-YOUR-FILES-HERE/1-PHOTOS/photo-10.heic" alt="訪談小組與曾鈺成師兄合照" onerror="this.style.display='none'">
+                    <div class="photo-caption">訪談小組與曾鈺成師兄合照留念</div>
+                </div>
+            </div>
+
+            <div class="epilogue-footer">
+                <p class="footer-text">故事暫告一段落，但保羅人的精神永不息滅</p>
+                <button type="button" class="btn-restart" onclick="resetToStart()">
+                    ← 重新回到般咸道起點
+                </button>
+            </div>
+
+            <!-- BOTTOM ACTION BUTTON -->
+            <div class="epilogue-action-section">
+                <div class="action-divider">
+                    <span>✦</span>
+                </div>
+                <p class="action-text">完成整段旅程，你已了解曾鈺成師兄的聖保羅精神</p>
+                <button type="button" class="btn-action" onclick="resetToStart()">
+                    再次探索 →
+                </button>
+            </div>
+        </div>
+    </div>
+
+
+
+    <script>
+        // Story Database with photos from the photos folder
+        const db = {
+            1: {
+                chapter: "第一章 · 初見",
+                year: "1958",
+                subs: [
+                    {
+                        label: "校園初印象",
+                        title: "1958年：舊木地板與最嬌小的身影",
+                        intro: "那是舊木地板混雜著淡淡粉筆灰的味道，成為了一個時代最深刻的感官記憶。",
+                        html: `
+                            <div class="inline-photo-box">
+                                <img src="1-PUT-YOUR-FILES-HERE/1-PHOTOS/photo-3.HEIC" class="inline-photo" alt="聖保羅書院" onerror="this.style.display='none'">
+                                <div class="photo-caption">聖保羅書院校園一角</div>
+                            </div>
+                            <p>當曾師兄在 1958 年第一次踏進般咸道校園時，他對那座建築有著非常深刻的感官記憶。那時的校舍雖然沒有現代的宏偉，但卻透著一股傳統英文文法學校的莊嚴。</p>
+                            <div class="highlight-box">
+                                <p class="highlight-text">「那是一種舊木地板混雜著淡淡粉筆灰的味道。」</p>
+                            </div>
+                            <p>當時入讀聖保羅的原因其實非常純粹——因為家住得近，加上父母對這間百年老校自由學風的嚮往。對於一個剛步入中二的少年來說，這種質樸的味道成了一種安定人心的符號。</p>
+                            <p>有趣的是，曾師兄笑言自己當時是全班體型最嬌小的一個學生，父母甚至一度擔心他會被欺負。然而，聖保羅那種「大公無私」且包容的環境，讓這個安靜的孩子不僅沒有被邊緣化，反而能在星期三下午的空堂時間，盡情地在學校打乒乓球和羽毛球，度過無憂無慮的青蔥歲月。</p>
+                        `
+                    },
+                    {
+                        label: "西瓜波",
+                        title: "二樓露台與不會傷人的西瓜波",
+                        intro: "在混亂中尋找秩序的視角，為日後主持大局埋下了深刻的伏筆。",
+                        html: `
+                            <p>雖然偶爾會打球，但曾師兄骨子裡其實是個極其安靜的「觀察者」。他不愛在球場上衝鋒陷陣，反而最喜歡待在二樓的小露台上，俯瞰著下面發生的一切。</p>
+                            <div class="inline-photo-box">
+                                <img src="1-PUT-YOUR-FILES-HERE/1-PHOTOS/photo-4.HEIC" class="inline-photo" alt="校園回憶" onerror="this.style.display='none'">
+                                <div class="photo-caption">校園中的青春記憶</div>
+                            </div>
+                            <p>在小息或者午飯時間，當其他同學都在樓下瘋狂踢著紅白相間的塑料「西瓜波」時，他會靠在欄杆上安靜地看著。對熱愛數學的他而言，操場上人們的移動軌跡與西瓜波的彈跳，就像是一場充滿動態美感的幾何實驗。</p>
+                            <div class="highlight-box">
+                                <p class="highlight-text">「西瓜波有一個最大的好處，就是它不會傷人，因此即使是平時嚴肅的老師，偶爾也會忍不住下場跟學生們踢上幾腳。」</p>
+                            </div>
+                            <p>這種打破階級、不分師生的純粹互動，讓他在旁觀中領悟了 Brotherhood 的本質：在同一個操場上，所有人都在追逐同一個目標。這種在混亂中尋找秩序的視角，為他日後在政壇中能夠不偏不倚地主持大局，埋下了深刻的伏筆。</p>
+                        `
+                    }
+                ]
+            },
+            2: {
+                chapter: "第二章 · 成長",
+                year: "挫折與突破",
+                subs: [
+                    {
+                        label: "會考失落",
+                        title: "非完美的成績與恩師的包容",
+                        intro: "世人皆以為曾師兄是天之驕子，但他也曾有過人生的一處「暗影」。",
+                        html: `
+                            <p>世人皆以為曾師兄是天之驕子、完美的學霸，但他卻在訪談中揭開了人生的一處「暗影」。在那次關鍵的會考（School Certificate）中，他的成績其實並沒有達到自己的最高期望，甚至未能進入學校的「Top 10」榮譽榜。</p>
+                            <div class="inline-photo-box">
+                                <img src="1-PUT-YOUR-FILES-HERE/1-PHOTOS/photo-5.HEIC" class="inline-photo" alt="學習時光" onerror="this.style.display='none'">
+                                <div class="photo-caption">學習與成長的點滴</div>
+                            </div>
+                            <p>對於一個以「數學腦」自居的少年來說，這無疑是一次巨大的打擊與挫折。「那是我當時唯一感到極度失望的時刻。」他坦誠地說。</p>
+                            <div class="highlight-box">
+                                <p class="highlight-text">聖保羅最偉大的地方就在於此——即使成績不如預期，老師們依然視他為得意門生，甚至有三位老師邀請他到家中作客。</p>
+                            </div>
+                            <p>這種容許失敗、重視人格大於成績的包容，讓他明白了人生的價值不應被幾張試紙定義。這份挫折，反而讓他學會了如何以更寬廣的胸懷、更謙卑的態度去看待成敗。</p>
+                        `
+                    },
+                    {
+                        label: "火箭實驗",
+                        title: "STEAM的前身：爆炸的火箭",
+                        intro: "嘭的一聲，火箭不但沒有上天，還在地面直接爆炸起火。",
+                        html: `
+                            <p>中學時代的課外活動充滿了狂熱與「意外」。在 Form 2 到 Form 3 期間的星期六，學校會邀請校友回來分享天文學與物理知識，甚至帶領他們親手打磨望遠鏡的鏡片，這激發了曾師兄對科學的無限嚮往。</p>
+                            <p>最經典的莫過於一次 DIY 火箭實驗。他們滿心期待著自製的火箭升空，結果呢？「嘭」的一聲，火箭不但沒有上天，還在地面直接爆炸起火，變成了一團黑煙！</p>
+                            <div class="inline-photo-box">
+                                <img src="1-PUT-YOUR-FILES-HERE/1-PHOTOS/photo-6.HEIC" class="inline-photo" alt="課外活動" onerror="this.style.display='none'">
+                                <div class="photo-caption">豐富的課外活動時光</div>
+                            </div>
+                            <p>實驗雖然失敗了，但學校那種鼓勵嘗試的氛圍卻讓他受益匪淺。除了科學，他還展現了驚人的組織能力。為了創辦一個探討社會議題的寫作會，他竟然與當時的 Head Prefect 合作，大膽地向學校借用禮堂舉辦音樂會來籌款！這種不畏懼失敗、敢於無中生有創造新局面的魄力，正是聖保羅賦予他的精神資產。</p>
+                        `
+                    }
+                ]
+            },
+            3: {
+                chapter: "第三章 · 意志",
+                year: "深夜行軍",
+                subs: [
+                    {
+                        label: "童軍精神",
+                        title: "11點出發的跨階級意志",
+                        intro: "在黑暗中翻山越嶺，階級與背景被徹底抹平。",
+                        html: `
+                            <p>如果要選一個最能代表「意志」與「平等」的記憶，曾師兄毫不猶豫地選擇了童軍的深夜行軍。那天晚上 11 點，他們一群十幾歲的保羅仔背著沉重的裝備，從香港仔出發，在黑暗中翻山越嶺，一路向柴灣進發。</p>
+                            <div class="inline-photo-box">
+                                <img src="1-PUT-YOUR-FILES-HERE/1-PHOTOS/photo-7.HEIC" class="inline-photo" alt="團隊精神" onerror="this.style.display='none'">
+                                <div class="photo-caption">團隊合作與友誼</div>
+                            </div>
+                            <div class="highlight-box">
+                                <p class="highlight-text">「在黑暗中，你唯一能依賴的就是身邊的隊友。」</p>
+                            </div>
+                            <p>那種在極度疲累中互相攙扶的經歷，讓他深刻理解了聖保羅人的 Brotherhood。有趣的是，行軍途中他們還不忘跑到街市去尋找宵夜，這份苦中作樂的幽默感也是保羅仔的標誌。</p>
+                            <p>更重要的是，這次行軍彰顯了學校的跨階級友誼。曾師兄提到，他的同學中，有人住著擁有巨大花園的半山豪宅，也有人住在擁擠的天台木屋裡。但在深夜的山路上，在同一套童軍制服下，階級與背景被徹底抹平。沒有人會在乎你家住哪裡，唯一重要的是大家能否一起走到終點。這種大公無私的平權觀念，成為了他日後從政時最堅定的信仰。</p>
+                        `
+                    }
+                ]
+            },
+            4: {
+                chapter: "第四章 · 轉向",
+                year: "1968",
+                subs: [
+                    {
+                        label: "天文夢碎",
+                        title: "天文夢的終點：時代的轉向",
+                        intro: "當一扇門被歷史關上時，你必須決定是繼續停留在破碎的夢裡，還是重新尋找腳下的路。",
+                        html: `
+                            <p>曾師兄的人生，本來有著一個完全不同的劇本。因為在高中時對數學與生物的選擇中，他出於純粹的熱愛選擇了數學。他曾有一個強烈的天文物理學家夢想，希望能去美國深造，在那裡的實驗室親手打磨望遠鏡的鏡片，將目光投向浩瀚的宇宙。</p>
+                            <div class="inline-photo-box">
+                                <img src="1-PUT-YOUR-FILES-HERE/1-PHOTOS/photo-8.HEIC" class="inline-photo" alt="夢想與現實" onerror="this.style.display='none'">
+                                <div class="photo-caption">夢想與現實的交錯</div>
+                            </div>
+                            <p>然而，1968 年的全球社會動盪改變了一切。由於客觀原因，他赴美深造的夢想被迫中止。看著一些年輕師弟最終順利出國，他坦言當時心中曾有過一絲落寞。</p>
+                            <div class="highlight-box">
+                                <p class="highlight-text">「那是人生中一個巨大的轉折，當一扇門被歷史關上時，你必須決定是繼續停留在破碎的夢裡，還是重新尋找腳下的路。」</p>
+                            </div>
+                            <p>最終，命運將他留在香港。雖然沒能成為磨鏡片的科學家，但他卻將數學的嚴密邏輯帶入了教育與政治舞台。在混亂的議會中，他運用這份理性的力量去尋求社會的最大公約數。回首過去，這條轉折之路，或許才是命運為他安排的最優解。</p>
+                        `
+                    }
+                ]
+            },
+            5: {
+                chapter: "第五章 · 純粹",
+                year: "1234",
+                subs: [
+                    {
+                        label: "幸運數字",
+                        title: "數學家的純粹快樂與追求",
+                        intro: "那是人生中最快樂的一個微小瞬間——准考證上的編號剛好是「1234」。",
+                        html: `
+                            <p>「那是人生中最快樂的一個微小瞬間。」曾師兄提到一次重大公開考試時，眼中依然閃爍著光芒。當他收到准考證，發現上面的候選人編號竟然剛好是「1234」。</p>
+                            <div class="inline-photo-box">
+                                <img src="1-PUT-YOUR-FILES-HERE/1-PHOTOS/photo-9.HEIC" class="inline-photo" alt="珍貴時刻" onerror="this.style.display='none'">
+                                <div class="photo-caption">珍貴的訪談時刻</div>
+                            </div>
+                            <p>對於一個熱愛秩序、以數學為信仰的人來說，這組連續、工整的數字彷彿代表了某種神聖的指引與祝福，在緊張的考場中給了他極大的心理安慰。</p>
+                            <div class="highlight-box">
+                                <p class="highlight-text">那種因為對知識的純粹追求（Pursuit of Knowledge）而獲得公開肯定的瞬間，建立了他一生自信的根基。</p>
+                            </div>
+                            <p>而另一個讓他終身難忘的自豪時刻，是在小學六年級（當時聖保羅設有小學部）的晨會上。他在全校師生面前，被校長大聲叫出名字，走上台領取考試第一名的榮譽獎項。</p>
+                            <p>他說，這份快樂，沒有任何利益的考量，比後來在政壇上獲得的任何頭銜都要來得純粹。這就是聖保羅教會他的事：永遠保持對真理的熱誠，世界終會給你一個公正的坐標。</p>
+                        `
+                    }
+                ]
+            }
+        };
+
+        let currentActiveId = null;
+        let visitedNodes = new Set();
+        const totalNodesCount = 5;
+
+        // Web Audio API Sound Generator - No external files needed
+        let soundEnabled = true;
+        let audioContext = null;
+
+        function initAudio() {
+            if (!audioContext) {
+                audioContext = new (window.AudioContext || window.webkitAudioContext)();
+            }
+        }
+
+        function playClickSound() {
+            if (!soundEnabled || !audioContext) return;
+            const osc = audioContext.createOscillator();
+            const gainNode = audioContext.createGain();
+            osc.connect(gainNode);
+            gainNode.connect(audioContext.destination);
+            osc.frequency.setValueAtTime(800, audioContext.currentTime);
+            osc.frequency.exponentialRampToValueAtTime(400, audioContext.currentTime + 0.1);
+            gainNode.gain.setValueAtTime(0.3, audioContext.currentTime);
+            gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.1);
+            osc.start(audioContext.currentTime);
+            osc.stop(audioContext.currentTime + 0.1);
+        }
+
+        function playTransitionSound() {
+            if (!soundEnabled || !audioContext) return;
+            const osc = audioContext.createOscillator();
+            const gainNode = audioContext.createGain();
+            osc.connect(gainNode);
+            gainNode.connect(audioContext.destination);
+            osc.frequency.setValueAtTime(200, audioContext.currentTime);
+            osc.frequency.linearRampToValueAtTime(600, audioContext.currentTime + 0.3);
+            gainNode.gain.setValueAtTime(0.2, audioContext.currentTime);
+            gainNode.gain.linearRampToValueAtTime(0, audioContext.currentTime + 0.3);
+            osc.start(audioContext.currentTime);
+            osc.stop(audioContext.currentTime + 0.3);
+        }
+
+        function playCompleteSound() {
+            if (!soundEnabled || !audioContext) return;
+            const notes = [523.25, 659.25, 783.99, 1046.50]; // C major chord
+            notes.forEach((freq, i) => {
+                const osc = audioContext.createOscillator();
+                const gainNode = audioContext.createGain();
+                osc.connect(gainNode);
+                gainNode.connect(audioContext.destination);
+                osc.frequency.setValueAtTime(freq, audioContext.currentTime + i * 0.1);
+                gainNode.gain.setValueAtTime(0.15, audioContext.currentTime + i * 0.1);
+                gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + i * 0.1 + 0.5);
+                osc.start(audioContext.currentTime + i * 0.1);
+                osc.stop(audioContext.currentTime + i * 0.1 + 0.5);
+            });
+        }
+
+        function playCardSound() {
+            if (!soundEnabled || !audioContext) return;
+            const osc = audioContext.createOscillator();
+            const gainNode = audioContext.createGain();
+            osc.connect(gainNode);
+            gainNode.connect(audioContext.destination);
+            osc.frequency.setValueAtTime(600, audioContext.currentTime);
+            osc.frequency.exponentialRampToValueAtTime(300, audioContext.currentTime + 0.15);
+            gainNode.gain.setValueAtTime(0.2, audioContext.currentTime);
+            gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.15);
+            osc.start(audioContext.currentTime);
+            osc.stop(audioContext.currentTime + 0.15);
+        }
+
+        function playSound(type, volume = 0.5) {
+            initAudio();
+            switch(type) {
+                case 'click': playClickSound(); break;
+                case 'transition': playTransitionSound(); break;
+                case 'complete': playCompleteSound(); break;
+                case 'card': playCardSound(); break;
+            }
+        }
+
+        function toggleSound() {
+            initAudio();
+            soundEnabled = !soundEnabled;
+            const toggleBtn = document.getElementById('soundToggle');
+            if (soundEnabled) {
+                toggleBtn.innerHTML = '🔊';
+                toggleBtn.classList.remove('muted');
+                toggleBtn.title = '關閉音效';
+                playClickSound(); // Test sound
+            } else {
+                toggleBtn.innerHTML = '🔇';
+                toggleBtn.classList.add('muted');
+                toggleBtn.title = '開啟音效';
+            }
+        }
+
+        function startJourney() {
+            playSound('transition');
+            const startScreen = document.getElementById('start-screen');
+            startScreen.style.opacity = '0';
+            setTimeout(() => {
+                startScreen.style.display = 'none';
+                document.getElementById('hub-screen').style.display = 'block';
+                // Show couplets
+                document.getElementById('couplet-left').style.display = 'block';
+                document.getElementById('couplet-right').style.display = 'block';
+            }, 800);
+        }
+
+        function openPanel(id) {
+            playSound('card');
+            currentActiveId = id;
+            const data = db[id];
+            
+            document.getElementById('modal-chapter').textContent = data.chapter;
+            
+            const tabsContainer = document.getElementById('sub-tabs');
+            tabsContainer.innerHTML = '';
+            data.subs.forEach((sub, idx) => {
+                const btn = document.createElement('button');
+                btn.type = 'button';
+                btn.className = 'sub-tab ' + (idx === 0 ? 'active' : '');
+                btn.textContent = sub.label;
+                btn.onclick = function() {
+                    playSound('click');
+                    document.querySelectorAll('.sub-tab').forEach(t => t.classList.remove('active'));
+                    btn.classList.add('active');
+                    renderArticleContent(idx);
+                };
+                tabsContainer.appendChild(btn);
+            });
+
+            renderArticleContent(0);
+            
+            const modal = document.getElementById('story-modal');
+            modal.style.display = 'flex';
+            document.body.style.overflow = 'hidden';
+            setTimeout(() => modal.classList.add('show'), 20);
+        }
+
+        function renderArticleContent(idx) {
+            const content = db[currentActiveId].subs[idx];
+            document.getElementById('article-title').textContent = content.title;
+            document.getElementById('article-intro').textContent = content.intro;
+            document.getElementById('article-content').innerHTML = content.html;
+            document.getElementById('article-scroll').scrollTop = 0;
+        }
+
+        function finishReading() {
+            playSound('click');
+            const modal = document.getElementById('story-modal');
+            modal.classList.remove('show');
+            document.body.style.overflow = '';
+            
+            setTimeout(() => {
+                modal.style.display = 'none';
+                if (currentActiveId) {
+                    const node = document.getElementById('node-' + currentActiveId);
+                    if(node) node.classList.add('completed');
+                    
+                    visitedNodes.add(currentActiveId);
+                    
+                    // Update progress dots
+                    const dots = document.querySelectorAll('.progress-dot');
+                    dots.forEach((dot, idx) => {
+                        if (idx < visitedNodes.size) {
+                            dot.classList.add('completed');
+                        }
+                    });
+                    
+                    document.getElementById('progress-text').textContent = visitedNodes.size + '/' + totalNodesCount;
+                    
+                    if (visitedNodes.size === totalNodesCount) {
+                        document.getElementById('ending-trigger').style.display = 'block';
+                        // Play completion sound after a short delay
+                        setTimeout(() => playSound('complete'), 500);
+                    }
+                }
+                currentActiveId = null;
+            }, 400);
+        }
+
+        function showFinalEpilogue() {
+            playSound('transition');
+            document.getElementById('hub-screen').style.display = 'none';
+            // Hide couplets when showing epilogue
+            document.getElementById('couplet-left').style.display = 'none';
+            document.getElementById('couplet-right').style.display = 'none';
+            const epilogue = document.getElementById('epilogue-screen');
+            epilogue.style.display = 'block';
+            epilogue.scrollTop = 0;
+        }
+
+        function resetToStart() {
+            playSound('transition');
+            document.getElementById('epilogue-screen').style.display = 'none';
+            
+            visitedNodes.clear();
+            document.getElementById('hub-screen').style.display = 'none';
+            document.getElementById('ending-trigger').style.display = 'none';
+            
+            // Hide couplets when going back to start
+            document.getElementById('couplet-left').style.display = 'none';
+            document.getElementById('couplet-right').style.display = 'none';
+            
+            // Reset progress dots
+            document.querySelectorAll('.progress-dot').forEach(dot => {
+                dot.classList.remove('completed');
+            });
+            document.getElementById('progress-text').textContent = '0/' + totalNodesCount;
+            
+            // Reset cards
+            for(let i = 1; i <= totalNodesCount; i++){
+                const node = document.getElementById('node-' + i);
+                if(node) node.classList.remove('completed');
+            }
+
+            // Show start screen with proper opacity reset
+            const startScreen = document.getElementById('start-screen');
+            startScreen.style.opacity = '0';
+            startScreen.style.display = 'flex';
+            // Force reflow
+            void startScreen.offsetWidth;
+            // Now fade in
+            startScreen.style.opacity = '1';
+        }
+
+        // Close modal on escape key
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape') {
+                const modal = document.getElementById('story-modal');
+                if (modal.classList.contains('show')) {
+                    finishReading();
+                }
+            }
+        });
+    </script>
+</body>
+</html>
